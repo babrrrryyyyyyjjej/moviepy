@@ -1,0 +1,30 @@
+from moviepy.editor import *
+from moviepy.video.fx import resize
+import numpy as np
+
+# Image paths for Hellcat and M4
+hellcat_img_path = "/mnt/data/A_digital_photograph_captures_a_parked_Dodge_Chall.png"
+m4_img_path = "/mnt/data/A_high-resolution_digital_photograph_taken_at_nigh.png"
+
+# Create clips from both images, 15 seconds each, resized for vertical video (1280 height for memory stability)
+hellcat_clip = ImageClip(hellcat_img_path, duration=15).resize(height=1280)
+m4_clip = ImageClip(m4_img_path, duration=15).resize(height=1280)
+
+# Cinematic zoom effect
+hellcat_zoom = hellcat_clip.fx(resize.resize, lambda t: 1 + 0.03 * np.sin(2 * np.pi * t / 6))
+m4_zoom = m4_clip.fx(resize.resize, lambda t: 1 + 0.03 * np.sin(2 * np.pi * t / 6))
+
+# Fade effects
+hellcat_final = hellcat_zoom.fadein(1).fadeout(1)
+m4_final = m4_zoom.fadein(1).fadeout(1)
+
+# Combine clips
+final_video = concatenate_videoclips([hellcat_final, m4_final])
+
+# Output path
+final_video_path = "/mnt/data/srt_hellcat_bmw_m4_vertical_edit.mp4"
+
+# Export video
+final_video.write_videofile(final_video_path, fps=24)
+
+final_video_path
